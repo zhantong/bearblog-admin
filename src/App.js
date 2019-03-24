@@ -2,16 +2,21 @@ import React, { Component } from "react";
 import { Layout, Menu } from "antd";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import List from "./article/List";
-
-const routes = [
-  {
-    path: "/article/list",
-    main: () => <List />
-  }
-];
+import Edit from "./article/Edit";
 
 class App extends Component {
   render() {
+    let params = new URLSearchParams(window.location.search);
+    const routes = [
+      {
+        path: "/article/list",
+        main: () => <List />
+      },
+      {
+        path: "/article/edit",
+        main: () => <Edit number={params.get("number")} />
+      }
+    ];
     return (
       <Router>
         <Layout>
@@ -22,6 +27,9 @@ class App extends Component {
                 <Menu.SubMenu title="文章">
                   <Menu.Item key="1">
                     <Link to="/article/list">列表</Link>
+                  </Menu.Item>
+                  <Menu.Item key="2">
+                    <Link to="/article/edit">编辑</Link>
                   </Menu.Item>
                 </Menu.SubMenu>
               </Menu>

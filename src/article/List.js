@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import request from "../utils/ApiClient";
 import { Table, Button } from "antd";
+import { Link } from "react-router-dom";
 
 class ArticleList extends Component {
   constructor(props) {
@@ -18,7 +19,21 @@ class ArticleList extends Component {
   }
   expandedRowRender(record) {
     const columns = [
-      { title: "标题", dataIndex: "title", key: "title" },
+      {
+        title: "标题",
+        dataIndex: "title",
+        key: "title",
+        render: (text, article) => (
+          <Link
+            to={{
+              pathname: "/article/edit",
+              search: `?number=${article.number}`
+            }}
+          >
+            {text}
+          </Link>
+        )
+      },
       { title: "时间", dataIndex: "timestamp", key: "timestamp" },
       { title: "状态", dataIndex: "status", key: "status" },
       {
