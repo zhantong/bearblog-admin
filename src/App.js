@@ -14,7 +14,7 @@ class App extends Component {
       },
       {
         path: "/article/edit",
-        main: () => <Edit number={params.get("number")} />
+        main: () => <Edit id={params.get("id")} />
       }
     ];
     return (

@@ -27,7 +27,7 @@ class ArticleList extends Component {
           <Link
             to={{
               pathname: "/article/edit",
-              search: `?number=${article.number}`
+              search: `?id=${article.id}`
             }}
           >
             {text}
@@ -48,7 +48,7 @@ class ArticleList extends Component {
           <Button
             type="danger"
             onClick={() => {
-              this.deleteArticle(article.number);
+              this.deleteArticle(article.id);
             }}
           >
             删除
@@ -76,9 +76,9 @@ class ArticleList extends Component {
       />
     );
   }
-  deleteArticle(number) {
+  deleteArticle(id) {
     request({
-      url: `article/${number}`,
+      url: `article/${id}`,
       method: "DELETE"
     }).then(() => {
       request({

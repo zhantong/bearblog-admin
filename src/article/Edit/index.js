@@ -1,57 +1,98 @@
 import React, { Component } from "react";
-import { Form, Input } from "antd";
+import {
+  Form,
+  Input,
+  Row,
+  Col,
+  Collapse,
+  DatePicker,
+  TimePicker,
+  Button
+} from "antd";
 import request from "../../utils/ApiClient";
+import moment from "moment";
+import { Redirect } from "react-router";
 
 class Edit extends Component {
   state = { article: null };
-  constructor(props) {
-    super(props);
-    // this.state = { articles: [] };
-    // this.expandedRowRender = this.expandedRowRender.bind(this);
-  }
-  static getDerivedStateFromProps(props, state) {
-    if (props.number !== state.prevNumber) {
-      return {
-        prevNumber: props.number,
-        article: null
-      };
-    }
-    return null;
-  }
+
   componentDidMount() {
-    if (this.props.number) {
-      this._fetchArticle(this.props.number);
+    if (this.props.id) {
+      this._fetchArticle(this.props.id);
     }
   }
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.article === null &&
-      !this._asyncRequest &&
-      this.props.number
-    ) {
-      this._fetchArticle(this.props.number);
+    if (this.props.id != prevProps.id) {
+      this._fetchArticle(this.props.id);
     }
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to="/article/list" />;
+    }
     const { article = null } = this.state;
     return (
-      <div>
-        <Form.Item label="标题">
-          <Input value={article && article.title} />
-        </Form.Item>
-        <Form.Item label="内容">
-          <Input.TextArea rows={10} value={article && article.body} />
-        </Form.Item>
-      </div>
+      <Row>
+        <Col span={16}>
+          <Form.Item label="标题">
+            <Input
+              value={this.state.article && this.state.article.title}
+              onChange={event => {
+                this.setState({
+                  article: { ...this.state.article, title: event.target.value }
+                });
+              }}
+            />
+          </Form.Item>
+          <Form.Item label="内容">
+            <Input.TextArea
+              rows={10}
+              value={this.state.article && this.state.article.body}
+              onChange={event => {
+                this.setState({
+                  article: { ...this.state.article, body: event.target.value }
+                });
+              }}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Collapse defaultActiveKey="1">
+            <Collapse.Panel header="发布" key="1">
+              <Form.Item label="发布时间">
+                <DatePicker value={article && moment(article.timestamp)} />
+                <TimePicker value={article && moment(article.timestamp)} />
+              </Form.Item>
+              <Button
+                type="primary"
+                onClick={() => {
+                  this._updateArticle(this.state.article);
+                }}
+              >
+                发布
+              </Button>
+            </Collapse.Panel>
+          </Collapse>
+        </Col>
+      </Row>
     );
   }
-  _fetchArticle(number) {
+  _fetchArticle(id) {
     this._asyncRequest = request({
-      url: `article/${number}`,
+      url: `article/${id}`,
       method: "GET"
     }).then(res => {
       this.setState({ article: res });
+    });
+  }
+  _updateArticle(article) {
+    this._asyncRequest = request({
+      url: `article/${article.id}`,
+      method: "PATCH",
+      data: article
+    }).then(res => {
+      this.setState({ redirect: true });
     });
   }
 }
