@@ -12,6 +12,7 @@ import {
 import request from "../../utils/ApiClient";
 import moment from "moment";
 import { Redirect } from "react-router";
+import Tag from "./Tag";
 
 class Edit extends Component {
   state = { article: null };
@@ -22,7 +23,7 @@ class Edit extends Component {
     }
   }
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.id != prevProps.id) {
+    if (this.props.id !== prevProps.id) {
       this._fetchArticle(this.props.id);
     }
   }
@@ -74,9 +75,20 @@ class Edit extends Component {
               </Button>
             </Collapse.Panel>
           </Collapse>
+          <Tag
+            data={this.state.article && this.state.article.plugin.tag}
+            onDataChange={this._handlePluginDataChange("tag")}
+          />
         </Col>
       </Row>
     );
+  }
+  _handlePluginDataChange(pluginName) {
+    return function(data) {
+      this.setState(prevState => {
+        return (prevState.article.plugin[pluginName] = data);
+      });
+    }.bind(this);
   }
   _fetchArticle(id) {
     this._asyncRequest = request({
