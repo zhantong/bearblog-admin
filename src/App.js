@@ -6,15 +6,17 @@ import Edit from "./article/Edit";
 
 class App extends Component {
   render() {
-    let params = new URLSearchParams(window.location.search);
     const routes = [
       {
         path: "/article/list",
-        main: () => <List />
+        main: List
       },
       {
         path: "/article/edit",
-        main: () => <Edit id={params.get("id")} />
+        main: props => {
+          let params = new URLSearchParams(props.location.search);
+          return <Edit id={params.get("id")} />;
+        }
       }
     ];
     return (
