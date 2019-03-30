@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Collapse, Select } from "antd";
-import request from "../../utils/ApiClient";
+import request from "../../../utils/ApiClient";
 
 class Tag extends Component {
   state = { allTags: [] };

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Collapse, Select, Upload, Icon, List, Button } from "antd";
-import request from "../../utils/ApiClient";
-import { client as ApiClient } from "../../utils/ApiClient";
+import request from "../../../utils/ApiClient";
+import { client as ApiClient } from "../../../utils/ApiClient";
 
 class Attachment extends Component {
   state = { allAttachments: [] };

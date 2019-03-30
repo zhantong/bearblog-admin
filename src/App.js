@@ -1,24 +1,11 @@
 import React, { Component } from "react";
 import { Layout, Menu } from "antd";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import List from "./article/List";
-import Edit from "./article/Edit";
+import queryString from "query-string";
+import pluginManager from "./plugins";
 
 class App extends Component {
   render() {
-    const routes = [
-      {
-        path: "/article/list",
-        main: List
-      },
-      {
-        path: "/article/edit",
-        main: props => {
-          let params = new URLSearchParams(props.location.search);
-          return <Edit id={params.get("id")} />;
-        }
-      }
-    ];
     return (
       <Router>
         <Layout>
@@ -26,14 +13,17 @@ class App extends Component {
           <Layout>
             <Layout.Sider style={{ background: "#fff" }}>
               <Menu mode="inline" style={{ height: "100%", borderRight: 0 }}>
-                <Menu.SubMenu title="文章">
-                  <Menu.Item key="1">
-                    <Link to="/article/list">列表</Link>
-                  </Menu.Item>
-                  <Menu.Item key="2">
-                    <Link to="/article/edit">编辑</Link>
-                  </Menu.Item>
-                </Menu.SubMenu>
+                {pluginManager.plugins.map(plugin => (
+                  <Menu.SubMenu key={plugin.id} title={plugin.name}>
+                    {plugin.entries.map(entry => (
+                      <Menu.Item key={entry.slug}>
+                        <Link to={`/${plugin.id}/${entry.slug}`}>
+                          {entry.name}
+                        </Link>
+                      </Menu.Item>
+                    ))}
+                  </Menu.SubMenu>
+                ))}
               </Menu>
             </Layout.Sider>
             <Layout style={{ padding: "0 24px 24px" }}>
@@ -44,14 +34,19 @@ class App extends Component {
                   margin: 0
                 }}
               >
-                {routes.map((route, index) => (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    exact={route.exact}
-                    component={route.main}
-                  />
-                ))}
+                {pluginManager.plugins.map(plugin => {
+                  return plugin.entries.map(entry => (
+                    <Route
+                      key={`/${plugin.id}/${entry.slug}`}
+                      path={`/${plugin.id}/${entry.slug}`}
+                      component={props => {
+                        let params = queryString.parse(props.location.search);
+                        const Element = entry.main;
+                        return <Element {...params} />;
+                      }}
+                    />
+                  ));
+                })}
               </Layout.Content>
             </Layout>
           </Layout>
