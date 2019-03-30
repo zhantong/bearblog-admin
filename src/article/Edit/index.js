@@ -13,6 +13,7 @@ import request from "../../utils/ApiClient";
 import moment from "moment";
 import { Redirect } from "react-router";
 import Tag from "./Tag";
+import Category from "./Category";
 
 class Edit extends Component {
   state = { article: null };
@@ -78,6 +79,10 @@ class Edit extends Component {
           <Tag
             data={this.state.article && this.state.article.plugin.tag}
             onDataChange={this._handlePluginDataChange("tag")}
+          />
+          <Category
+            data={this.state.article && this.state.article.plugin.category}
+            onDataChange={this._handlePluginDataChange("category")}
           />
         </Col>
       </Row>
