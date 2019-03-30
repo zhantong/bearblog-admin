@@ -9,6 +9,14 @@ class Attachment extends Component {
   componentDidMount() {
     this._fetchAllAttachments();
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.article &&
+      (!prevProps.article || this.props.article.id !== prevProps.article.id)
+    ) {
+      this._fetchAllAttachments();
+    }
+  }
 
   customRequest = async ({ action, file, onSuccess, onError, onProgress }) => {
     const { base64, filename } = await new Promise(resolve => {
@@ -22,7 +30,7 @@ class Attachment extends Component {
       };
     });
     ApiClient.post(
-      `article/${this.props.articleId}/attachment`,
+      `article/${this.props.article.id}/attachment`,
       {
         base64,
         filename
@@ -75,15 +83,18 @@ class Attachment extends Component {
   }
   _deleteAttachment(id) {
     request({
-      url: `article/${this.props.articleId}/attachment/${id}`,
+      url: `article/${this.props.article.id}/attachment/${id}`,
       method: "DELETE"
     }).then(res => {
       this._fetchAllAttachments();
     });
   }
   _fetchAllAttachments() {
+    if (!this.props.article) {
+      return;
+    }
     request({
-      url: `article/${this.props.articleId}/attachments`,
+      url: `article/${this.props.article.id}/attachments`,
       method: "GET"
     }).then(res => {
       this.setState({ allAttachments: res.value });

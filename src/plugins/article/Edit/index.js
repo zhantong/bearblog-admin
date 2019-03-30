@@ -12,10 +12,8 @@ import {
 import request from "../../../utils/ApiClient";
 import moment from "moment";
 import { Redirect } from "react-router";
-import Tag from "./Tag";
-import Category from "./Category";
-import Attachment from "./Attachment";
-import Template from "./Template";
+
+import pluginManager from "../../";
 
 class Edit extends Component {
   state = { article: null };
@@ -78,19 +76,24 @@ class Edit extends Component {
               </Button>
             </Collapse.Panel>
           </Collapse>
-          <Tag
-            data={this.state.article && this.state.article.plugin.tag}
-            onDataChange={this._handlePluginDataChange("tag")}
-          />
-          <Category
-            data={this.state.article && this.state.article.plugin.category}
-            onDataChange={this._handlePluginDataChange("category")}
-          />
-          <Template
-            data={this.state.article && this.state.article.plugin.template}
-            onDataChange={this._handlePluginDataChange("template")}
-          />
-          <Attachment articleId={this.props.id} />
+          {pluginManager.plugins.map(plugin => {
+            if (
+              plugin.attach &&
+              plugin.attach.article &&
+              plugin.attach.article.edit
+            ) {
+              const Element = plugin.attach.article.edit.component;
+              return (
+                <Element
+                  article={this.state.article}
+                  data={
+                    this.state.article && this.state.article.plugin[plugin.id]
+                  }
+                  onDataChange={this._handlePluginDataChange(plugin.id)}
+                />
+              );
+            }
+          })}
         </Col>
       </Row>
     );
