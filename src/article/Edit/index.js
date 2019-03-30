@@ -14,6 +14,7 @@ import moment from "moment";
 import { Redirect } from "react-router";
 import Tag from "./Tag";
 import Category from "./Category";
+import Attachment from "./Attachment";
 
 class Edit extends Component {
   state = { article: null };
@@ -84,6 +85,7 @@ class Edit extends Component {
             data={this.state.article && this.state.article.plugin.category}
             onDataChange={this._handlePluginDataChange("category")}
           />
+          <Attachment articleId={this.props.id}/>
         </Col>
       </Row>
     );

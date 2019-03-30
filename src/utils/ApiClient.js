@@ -3,7 +3,7 @@ import https from "https";
 
 const BASE_URI = "https://127.0.0.1:5000/api/admin";
 
-const client = axios.create({
+export const client = axios.create({
   baseURL: BASE_URI,
   json: true,
   httpsAgent: new https.Agent({
