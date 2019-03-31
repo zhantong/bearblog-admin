@@ -76,20 +76,17 @@ class Edit extends Component {
               </Button>
             </Collapse.Panel>
           </Collapse>
-          {pluginManager.plugins.map(plugin => {
-            if (
-              plugin.attach &&
-              plugin.attach.article &&
-              plugin.attach.article.edit
-            ) {
-              const Element = plugin.attach.article.edit.component;
+          {pluginManager.getAttaches("article").map(attach => {
+            if (attach.attach.edit) {
+              const Element = attach.attach.edit.component;
               return (
                 <Element
                   article={this.state.article}
                   data={
-                    this.state.article && this.state.article.plugin[plugin.id]
+                    this.state.article &&
+                    this.state.article.plugin[attach.pluginId]
                   }
-                  onDataChange={this._handlePluginDataChange(plugin.id)}
+                  onDataChange={this._handlePluginDataChange(attach.pluginId)}
                 />
               );
             }

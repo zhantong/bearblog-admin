@@ -18,6 +18,16 @@ class Manager {
   register(config) {
     this.plugins.push(config);
   }
+
+  getAttaches(pluginId) {
+    let result = [];
+    this.plugins.map(plugin => {
+      if (plugin.attach && plugin.attach[pluginId]) {
+        result.push({ pluginId: plugin.id, attach: plugin.attach[pluginId] });
+      }
+    });
+    return result;
+  }
 }
 
 const manager = new Manager();
