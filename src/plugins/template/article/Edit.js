@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Collapse, Select,Switch } from "antd";
-import request from "../../../utils/ApiClient";
+import { Collapse, Select } from "antd";
+import request from "utils/ApiClient";
 
 class Template extends Component {
   state = { allTemplates: [] };

@@ -9,11 +9,11 @@ import {
   TimePicker,
   Button
 } from "antd";
-import request from "../../../utils/ApiClient";
+import request from "utils/ApiClient";
 import moment from "moment";
 import { Redirect } from "react-router";
 
-import pluginManager from "../../";
+import pluginManager from "plugins";
 
 class Edit extends Component {
   state = { article: null };
