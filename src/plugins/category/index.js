@@ -1,4 +1,5 @@
 import ArticleEdit from "./article/Edit";
+import ArticleList from "./article/List";
 
 export default {
   id: "category",
@@ -8,6 +9,12 @@ export default {
     article: {
       edit: {
         component: ArticleEdit
+      },
+      list: {
+        column: {
+          title: "分类",
+          component: ArticleList
+        }
       }
     }
   }

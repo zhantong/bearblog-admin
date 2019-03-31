@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import request from "utils/ApiClient";
 import { Table, Button } from "antd";
 import { Link } from "react-router-dom";
+import pluginManager from "plugins";
 
 class ArticleList extends Component {
   constructor(props) {
@@ -56,6 +57,23 @@ class ArticleList extends Component {
         )
       }
     ];
+    pluginManager.getAttaches("article").forEach(attach => {
+      if (attach.attach.list) {
+        columns.push({
+          title: attach.attach.list.column.title,
+          key: attach.attach.list.column.title,
+          render: (text, article) => {
+            const Element = attach.attach.list.column.component;
+            return (
+              <Element
+                article={article}
+                data={article.plugin[attach.pluginId]}
+              />
+            );
+          }
+        });
+      }
+    });
     return (
       <Table
         columns={columns}
