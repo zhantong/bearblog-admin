@@ -4,34 +4,34 @@ import request from "utils/ApiClient";
 import { Redirect } from "react-router";
 
 class Edit extends Component {
-  state = { tag: null };
+  state = { category: null };
 
   componentDidMount() {
     if (this.props.id) {
-      this._fetchTag(this.props.id);
+      this._fetchCategory(this.props.id);
     }
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.id !== prevProps.id) {
-      this._fetchTag(this.props.id);
+      this._fetchCategory(this.props.id);
     }
   }
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to="/tag/list" />;
+      return <Redirect to="/category/list" />;
     }
-    const { tag = null } = this.state;
+    const { category = null } = this.state;
     return (
       <Row>
         <Col span={16}>
           <Form.Item label="名称">
             <Input
-              value={tag && tag.name}
+              value={category && category.name}
               onChange={event => {
                 event.persist();
                 this.setState(prevState => ({
-                  tag: { ...prevState.tag, name: event.target.value }
+                  category: { ...prevState.category, name: event.target.value }
                 }));
               }}
             />
@@ -39,11 +39,14 @@ class Edit extends Component {
           <Form.Item label="描述">
             <Input.TextArea
               rows={3}
-              value={tag && tag.description}
+              value={category && category.description}
               onChange={event => {
                 event.persist();
                 this.setState(prevState => ({
-                  tag: { ...prevState.tag, description: event.target.value }
+                  category: {
+                    ...prevState.category,
+                    description: event.target.value
+                  }
                 }));
               }}
             />
@@ -52,7 +55,7 @@ class Edit extends Component {
             <Button
               type="primary"
               onClick={() => {
-                this._updateTag(tag);
+                this._updateCategory(category);
               }}
             >
               发布
@@ -63,19 +66,19 @@ class Edit extends Component {
     );
   }
 
-  _fetchTag(id) {
+  _fetchCategory(id) {
     this._asyncRequest = request({
-      url: `tag/${id}`,
+      url: `category/${id}`,
       method: "GET"
     }).then(res => {
-      this.setState({ tag: res });
+      this.setState({ category: res });
     });
   }
-  _updateTag(tag) {
+  _updateCategory(category) {
     this._asyncRequest = request({
-      url: `tag/${tag.id}`,
+      url: `category/${category.id}`,
       method: "PATCH",
-      data: tag
+      data: category
     }).then(res => {
       this.setState({ redirect: true });
     });
