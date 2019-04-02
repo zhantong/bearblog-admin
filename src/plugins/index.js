@@ -4,6 +4,7 @@ import categoryConfig from "./category";
 import attachmentConfig from "./attachment";
 import templateConfig from "./template";
 import commentConfig from "./comment";
+import pageConfig from "./page";
 
 class Manager {
   constructor() {
@@ -15,6 +16,7 @@ class Manager {
     this.register(attachmentConfig);
     this.register(templateConfig);
     this.register(commentConfig);
+    this.register(pageConfig);
   }
 
   register(config) {
