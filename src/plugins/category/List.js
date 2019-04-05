@@ -33,7 +33,21 @@ class CategoryList extends Component {
           </Link>
         )
       },
-      { title: "文章数", dataIndex: "countArticle", key: "countArticle" },
+      {
+        title: "文章数",
+        dataIndex: "countArticle",
+        key: "countArticle",
+        render: (text, category) => (
+          <Link
+            to={{
+              pathname: "/article/list",
+              search: `?category=${category.slug}`
+            }}
+          >
+            {text}
+          </Link>
+        )
+      },
       {
         title: "操作",
         key: "action",

@@ -3,6 +3,7 @@ import request from "utils/ApiClient";
 import { Table, Button } from "antd";
 import { Link } from "react-router-dom";
 import pluginManager from "plugins";
+import queryString from "query-string";
 
 class ArticleList extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class ArticleList extends Component {
   }
   componentDidMount() {
     request({
-      url: `articles`,
+      url: `articles?${queryString.stringify(this.props)}`,
       method: "GET"
     }).then(res => {
       this.setState({ articles: res.value });

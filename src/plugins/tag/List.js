@@ -33,7 +33,21 @@ class TagList extends Component {
           </Link>
         )
       },
-      { title: "文章数", dataIndex: "countArticle", key: "countArticle" },
+      {
+        title: "文章数",
+        dataIndex: "countArticle",
+        key: "countArticle",
+        render: (text, tag) => (
+          <Link
+            to={{
+              pathname: "/article/list",
+              search: `?tag=${tag.slug}`
+            }}
+          >
+            {text}
+          </Link>
+        )
+      },
       {
         title: "操作",
         key: "action",
