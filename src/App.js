@@ -41,8 +41,8 @@ class App extends Component {
                       path={`/${plugin.id}/${entry.slug}`}
                       component={props => {
                         let params = queryString.parse(props.location.search);
-                        const Element = entry.main;
-                        return <Element {...params} />;
+                        const Element = entry.main.component || entry.main;
+                        return <Element {...params} {...entry.main.params} />;
                       }}
                     />
                   ));
