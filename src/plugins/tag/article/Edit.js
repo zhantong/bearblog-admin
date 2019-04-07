@@ -20,7 +20,7 @@ class Tag extends Component {
             value={this.props.data}
           >
             {this.state.allTags.map(tag => (
-              <Select.Option key={tag}>{tag}</Select.Option>
+              <Select.Option key={tag.slug}>{tag.name}</Select.Option>
             ))}
           </Select>
         </Collapse.Panel>

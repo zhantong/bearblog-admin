@@ -16,7 +16,12 @@ import { Redirect } from "react-router";
 import pluginManager from "plugins";
 
 class Edit extends Component {
-  state = { article: null };
+  state = { article: { plugin: {} } };
+
+  constructor(props) {
+    super(props);
+    this._handleDatetimeChange = this._handleDatetimeChange.bind(this);
+  }
 
   componentDidMount() {
     if (this.props.id) {
@@ -63,13 +68,19 @@ class Edit extends Component {
           <Collapse defaultActiveKey="1">
             <Collapse.Panel header="发布" key="1">
               <Form.Item label="发布时间">
-                <DatePicker value={article && moment(article.timestamp)} />
-                <TimePicker value={article && moment(article.timestamp)} />
+                <DatePicker
+                  value={article && moment(article.timestamp)}
+                  onChange={this._handleDatetimeChange}
+                />
+                <TimePicker
+                  value={article && moment(article.timestamp)}
+                  onChange={this._handleDatetimeChange}
+                />
               </Form.Item>
               <Button
                 type="primary"
                 onClick={() => {
-                  this._updateArticle(this.state.article);
+                  this.handleSubmitArticle(this.state.article);
                 }}
               >
                 发布
@@ -110,10 +121,31 @@ class Edit extends Component {
       this.setState({ article: res });
     });
   }
+  _handleDatetimeChange(datetime) {
+    this.setState(prevState => {
+      return (prevState.article.timestamp = datetime.toISOString());
+    });
+  }
+  handleSubmitArticle(article) {
+    if (article.id) {
+      this._updateArticle(article);
+    } else {
+      this._create_article(article);
+    }
+  }
   _updateArticle(article) {
     this._asyncRequest = request({
       url: `article/${article.id}`,
       method: "PATCH",
+      data: article
+    }).then(res => {
+      this.setState({ redirect: true });
+    });
+  }
+  _create_article(article) {
+    request({
+      url: `articles`,
+      method: "POST",
       data: article
     }).then(res => {
       this.setState({ redirect: true });
