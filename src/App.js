@@ -9,12 +9,16 @@ import {
 } from "react-router-dom";
 import queryString from "query-string";
 import pluginManager from "./plugins";
-import { client as apiClient } from "utils/ApiClient";
+import request, { client as apiClient } from "utils/ApiClient";
 import Login from "./Login";
 
 class App extends Component {
+  state = { me: null };
+
   constructor(props) {
     super(props);
+    this._handleLogout = this._handleLogout.bind(this);
+
     let that = this;
     apiClient.interceptors.request.use(
       config => {
@@ -41,6 +45,9 @@ class App extends Component {
       }
     );
   }
+  componentDidMount() {
+    this._fetchMe();
+  }
 
   render() {
     if (!localStorage.getItem("JWT_TOKEN")) {
@@ -53,10 +60,30 @@ class App extends Component {
         </Router>
       );
     }
+    let meMenuItem;
+    if (this.state.me) {
+      meMenuItem = (
+        <Menu.SubMenu title={this.state.me.name}>
+          <Menu.Item key="setting:1">
+            <a onClick={() => this._handleLogout()}>注销</a>
+          </Menu.Item>
+        </Menu.SubMenu>
+      );
+    }
+    console.log(this.state);
     return (
       <Router>
         <Layout>
-          <Layout.Header />
+          <Layout.Header>
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={["2"]}
+              style={{ lineHeight: "64px", float: "right" }}
+            >
+              {meMenuItem}
+            </Menu>
+          </Layout.Header>
           <Layout>
             <Layout.Sider style={{ background: "#fff" }}>
               <Menu mode="inline" style={{ height: "100%", borderRight: 0 }}>
@@ -103,6 +130,24 @@ class App extends Component {
   }
   handle401() {
     localStorage.removeItem("JWT_TOKEN");
+  }
+  _fetchMe() {
+    request({
+      url: `me`,
+      method: "GET"
+    }).then(res => {
+      this.setState({
+        me: res
+      });
+    });
+  }
+  _handleLogout() {
+    request({
+      url: `logout`,
+      method: "DELETE"
+    }).then(res => {
+      window.location.reload(false);
+    });
   }
 }
 
