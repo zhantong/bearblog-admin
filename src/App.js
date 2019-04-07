@@ -1,11 +1,58 @@
 import React, { Component } from "react";
 import { Layout, Menu } from "antd";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect,
+  Switch
+} from "react-router-dom";
 import queryString from "query-string";
 import pluginManager from "./plugins";
+import { client as apiClient } from "utils/ApiClient";
+import Login from "./Login";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    let that = this;
+    apiClient.interceptors.request.use(
+      config => {
+        if (localStorage.getItem("JWT_TOKEN")) {
+          config.headers.Authorization = `Bearer ${localStorage.getItem(
+            "JWT_TOKEN"
+          )}`;
+        }
+        return config;
+      },
+      err => {
+        return Promise.reject(err);
+      }
+    );
+    apiClient.interceptors.response.use(
+      function(response) {
+        return response;
+      },
+      function(error) {
+        if (error.response.status === 401) {
+          that.handle401();
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
   render() {
+    if (!localStorage.getItem("JWT_TOKEN")) {
+      return (
+        <Router>
+          <Switch>
+            <Route exact path="/login" component={Login} />
+            <Redirect to={`/login?redirect=${window.location.pathname}`} />
+          </Switch>
+        </Router>
+      );
+    }
     return (
       <Router>
         <Layout>
@@ -53,6 +100,9 @@ class App extends Component {
         </Layout>
       </Router>
     );
+  }
+  handle401() {
+    localStorage.removeItem("JWT_TOKEN");
   }
 }
 
