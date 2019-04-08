@@ -1,27 +1,12 @@
 import React, { Component } from "react";
-import {
-  Form,
-  Input,
-  Row,
-  Col,
-  Collapse,
-  DatePicker,
-  TimePicker,
-  Button
-} from "antd";
+import { Form, Input, Row, Col, Button } from "antd";
 import request from "utils/ApiClient";
-import moment from "moment";
 import { Redirect } from "react-router";
-
 import pluginManager from "plugins";
+import Timestamp from "./Timestamp";
 
 class Edit extends Component {
   state = { article: { plugin: {} } };
-
-  constructor(props) {
-    super(props);
-    this._handleDatetimeChange = this._handleDatetimeChange.bind(this);
-  }
 
   componentDidMount() {
     if (this.props.id) {
@@ -65,28 +50,19 @@ class Edit extends Component {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Collapse defaultActiveKey="1">
-            <Collapse.Panel header="发布" key="1">
-              <Form.Item label="发布时间">
-                <DatePicker
-                  value={article && moment(article.timestamp)}
-                  onChange={this._handleDatetimeChange}
-                />
-                <TimePicker
-                  value={article && moment(article.timestamp)}
-                  onChange={this._handleDatetimeChange}
-                />
-              </Form.Item>
-              <Button
-                type="primary"
-                onClick={() => {
-                  this.handleSubmitArticle(this.state.article);
-                }}
-              >
-                发布
-              </Button>
-            </Collapse.Panel>
-          </Collapse>
+          <Button
+            type="primary"
+            block
+            onClick={() => {
+              this.handleSubmitArticle(this.state.article);
+            }}
+          >
+            发布
+          </Button>
+          <Timestamp
+            data={this.state.article["timestamp"]}
+            onDataChange={this._handleArticleDataChange("timestamp")}
+          />
           {pluginManager.getAttaches("article").map(attach => {
             if (attach.attach.edit) {
               const Element = attach.attach.edit.component;
@@ -106,6 +82,13 @@ class Edit extends Component {
       </Row>
     );
   }
+  _handleArticleDataChange(name) {
+    return function(data) {
+      this.setState(prevState => {
+        return (prevState.article[name] = data);
+      });
+    }.bind(this);
+  }
   _handlePluginDataChange(pluginName) {
     return function(data) {
       this.setState(prevState => {
@@ -121,11 +104,7 @@ class Edit extends Component {
       this.setState({ article: res });
     });
   }
-  _handleDatetimeChange(datetime) {
-    this.setState(prevState => {
-      return (prevState.article.timestamp = datetime.toISOString());
-    });
-  }
+
   handleSubmitArticle(article) {
     if (article.id) {
       this._updateArticle(article);
