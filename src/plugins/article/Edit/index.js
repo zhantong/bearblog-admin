@@ -4,6 +4,7 @@ import request from "utils/ApiClient";
 import { Redirect } from "react-router";
 import pluginManager from "plugins";
 import Timestamp from "./Timestamp";
+import Status from "./Status";
 
 class Edit extends Component {
   state = { article: { plugin: {} } };
@@ -63,6 +64,10 @@ class Edit extends Component {
             data={this.state.article["timestamp"]}
             onDataChange={this._handleArticleDataChange("timestamp")}
           />
+          <Status
+            data={this.state.article["status"]}
+            onDataChange={this._handleArticleDataChange("status")}
+          />
           {pluginManager.getAttaches("article").map(attach => {
             if (attach.attach.edit) {
               const Element = attach.attach.edit.component;
@@ -97,12 +102,16 @@ class Edit extends Component {
     }.bind(this);
   }
   _fetchArticle(id) {
-    this._asyncRequest = request({
-      url: `article/${id}`,
-      method: "GET"
-    }).then(res => {
-      this.setState({ article: res });
-    });
+    if (id) {
+      this._asyncRequest = request({
+        url: `article/${id}`,
+        method: "GET"
+      }).then(res => {
+        this.setState({ article: res });
+      });
+    } else {
+      this.setState({ article: { plugin: {} } });
+    }
   }
 
   handleSubmitArticle(article) {
