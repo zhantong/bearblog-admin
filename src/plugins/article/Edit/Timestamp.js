@@ -7,8 +7,8 @@ class Timestamp extends Component {
     super(props);
     this._handleDatetimeChange = this._handleDatetimeChange.bind(this);
   }
-  componentDidMount() {
-    if (!this.props.timestamp) {
+  componentDidUpdate() {
+    if (!this.props.data) {
       this._handleDatetimeChange(moment());
     }
   }
