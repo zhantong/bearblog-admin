@@ -6,6 +6,7 @@ import templateConfig from "./template";
 import commentConfig from "./comment";
 import pageConfig from "./page";
 import settingsConfig from "./settings";
+import themeConfig from "./theme";
 
 class Manager {
   constructor() {
@@ -19,6 +20,7 @@ class Manager {
     this.register(commentConfig);
     this.register(pageConfig);
     this.register(settingsConfig);
+    this.register(themeConfig);
   }
 
   register(config) {
